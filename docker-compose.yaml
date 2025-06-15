@@ -1,21 +1,17 @@
-
-
 services:
-  # Django (с встроенным runserver)
-  backend:
+  web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000  # Используем встроенный сервер
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     env_file:
       - .env
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
 
-  # PostgreSQL
   db:
     image: postgres:13
     env_file:
@@ -23,36 +19,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  # Redis
-  redis:
-    image: redis:6
-    ports:
-      - "6379:6379"
-
-  # Celery Worker
-  celery:
-    build: .
-    command: celery -A myproject worker --loglevel=info
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-
-  # Celery Beat
-  celery_beat:
-    build: .
-    command: celery -A core worker --loglevel=info
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
 
 volumes:
   postgres_data:
