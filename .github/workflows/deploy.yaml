@@ -29,13 +29,10 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run migrations
-      run: |
-        docker-compose -f docker-compose.prod.yml exec -T web bash -c "
-          while ! nc -z db 5432; do 
-            sleep 1
-          done
-          python manage.py migrate
-        "
+      uses: docker/compose-action@v3
+      with:
+        compose-file: docker-compose.prod.yml
+        command: exec -T web python manage.py migrate
 
 
     - name: Run tests
