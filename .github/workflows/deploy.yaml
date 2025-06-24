@@ -16,6 +16,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8
+      - name: Create flake8 config
+        run: |
+          cat << EOF > .flake8
+          [flake8]
+          max-line-length = 120
+          ignore = E203,E266,W503,E501,C901
+          exclude = .git,__pycache__,migrations,venv,.venv,env,.env,.github,scripts,docs,build,dist
+          EOF
       - name: Run flake8
         run: flake8 .
 
