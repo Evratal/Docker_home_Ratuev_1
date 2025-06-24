@@ -54,7 +54,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Set up SSH
+      - name: Debug SSH key
+        run: |
+          echo "SSH key:"
+          echo "${{ secrets.SSH_KEY }}" | head -n 2  # Вывести начало ключа для проверки (без полного раскрытия)
+
+      - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
