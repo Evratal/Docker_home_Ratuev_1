@@ -1,3 +1,4 @@
+# flake8: noqa: E501
 """
 Django settings for core project.
 
@@ -127,7 +128,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_ROOT = '/home/evrat_1/Docker_home_Ratuev_1/staticfiles/'  # Абсолютный путь
+STATIC_ROOT = '/home/evrat_1/Docker_home_Ratuev_1/staticfiles/'
+# Абсолютный путь
 STATIC_URL = '/static/'
 
 if 'test' in sys.argv:
